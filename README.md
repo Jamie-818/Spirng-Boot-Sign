@@ -2,7 +2,22 @@
 - 现在越来越多人关注接口安全，传统的接口在传输的过程中，容易被抓包然后更改里面的参数值达到某些目的。
 - 传统的做法是用安全框架或者在代码里面做验证，但是有些系统是不需要登录的，随时可以调。
 - 这时候我们可以通过对参数进行签名验证，如果参数与签名值不匹配，则请求不通过，直接返回错误信息。
-
+# 项目代码地址：
+   - [https://github.com/MrXuan3168/sign_server](https://github.com/MrXuan3168/sign_server)
+# 测试
+   1. 启动项目
+   2. GET请求可以用浏览器直接访问  http://localhost:8080/signTest?sign=A0161DC47118062053567CDD10FBACC6&username=admin&password=admin
+      - A0161DC47118062053567CDD10FBACC6 是 username=admin&password=admin MD5加密后的结果。可以打开 https://md5jiami.51240.com/ 然后输入 {"password":"admin","username":"admin"} 进行加密验证，json字符串里面，必须保证字段是按照 ascll码 
+      进行排序的,username的ascll码 比 password的ascll码 大，所以要放在后面。
+   3. 打开 postman 进行POST请求测试，请求Url为 http://localhost:8080/signTest?sign=A0161DC47118062053567CDD10FBACC6 参数为
+      ```json
+        {
+            "username":"admin",
+            "password":"admin"
+        }
+      ```
+![成功](https://upload-images.jianshu.io/upload_images/13183199-e0af7e0a7ee986d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![失败](https://upload-images.jianshu.io/upload_images/13183199-a26affcf8a3eee62.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 # 调用过程
 ![](https://upload-images.jianshu.io/upload_images/13183199-baaaaa49567dc4cc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
@@ -498,4 +513,5 @@ public class HttpUtils {
     }
 }
 ```
+
 
