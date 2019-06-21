@@ -44,7 +44,7 @@
    ```
 # 签名逻辑
 - 前端（客户端）：
-   1.不管GET Ulr 还是 POST Body 的参数，都转换成 json 对象，用 ascll码排序 对参数排序。
+   1.不管GET Url 还是 POST Body 的参数，都转换成 json 对象，用 ascll码排序 对参数排序。
    2.排序后对参数进行MD5加密，存入 sign 值。
    3.把 sign 值 放在 请求URL 后面或者 Head头 里面(该项目直接放在URL后面)。
 - 后端（服务端）：
