@@ -32,7 +32,6 @@ public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapp
      * @return
      */
     public String getBodyString(final ServletRequest request) {
-
         StringBuilder sb = new StringBuilder();
         try (InputStream inputStream = cloneInputStream(request.getInputStream());
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")))) {
@@ -53,7 +52,6 @@ public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapp
      * @return</br>
      */
     public InputStream cloneInputStream(ServletInputStream inputStream) {
-
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         int len;

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -31,20 +30,11 @@ public class HttpUtils {
      * @param request
      */
     public static SortedMap<String, String> getAllParams(HttpServletRequest request) throws IOException {
-
         SortedMap<String, String> result = new TreeMap<>();
         // 获取URL上的参数
-        Map<String, String> urlParams = getUrlParams(request);
-        for (Map.Entry entry : urlParams.entrySet()) {
-            result.put((String)entry.getKey(), (String)entry.getValue());
-        }
-        Map<String, String> allRequestParam = new HashMap<>(16);
-        // get请求不需要拿body参数
-        allRequestParam = getAllRequestParam(request);
-        // 将URL的参数和body参数进行合并
-        for (Map.Entry entry : allRequestParam.entrySet()) {
-            result.put((String)entry.getKey(), (String)entry.getValue());
-        }
+        getUrlParams(request, result);
+        // 获取body参数
+        getAllRequestParam(request, result);
         return result;
     }
 
@@ -55,7 +45,8 @@ public class HttpUtils {
      * @date 15:04 2019/5/30
      * @param request
      */
-    public static Map<String, String> getAllRequestParam(final HttpServletRequest request) throws IOException {
+    public static void getAllRequestParam(final HttpServletRequest request, SortedMap<String, String> result)
+        throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
         String str = "";
         StringBuilder wholeStr = new StringBuilder();
@@ -67,18 +58,21 @@ public class HttpUtils {
         String s = wholeStr.toString();
         if (!StringUtils.isEmpty(s)) {
             // 转化成json对象
-            return JSONObject.parseObject(s, Map.class);
+            Map<String, String> allRequestParam = JSONObject.parseObject(s, Map.class);
+            // 将URL的参数和body参数进行合并
+            for (Map.Entry entry : allRequestParam.entrySet()) {
+                result.put((String)entry.getKey(), (String)entry.getValue());
+            }
         }
-        return new HashMap<>();
     }
 
     /**
-     * 将URL请求参数转换成Map
+     * 获取url参数
      * 
      * @author show
      * @param request
      */
-    public static Map<String, String> getUrlParams(HttpServletRequest request) {
+    public static void getUrlParams(HttpServletRequest request, SortedMap<String, String> result) {
         String param = "";
         try {
             String urlParam = request.getQueryString();
@@ -88,7 +82,6 @@ public class HttpUtils {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        Map<String, String> result = new HashMap<>(16);
         String[] params = param.split("&");
         for (String s : params) {
             int index = s.indexOf("=");
@@ -96,6 +89,5 @@ public class HttpUtils {
                 result.put(s.substring(0, index), s.substring(index + 1));
             }
         }
-        return result;
     }
 }
